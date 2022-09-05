@@ -22,7 +22,9 @@ role_groupby <- function(){
     )
   View(grouped)
   ggplot(data=grouped, aes(x=Role, y=Average_cost )) +
-    geom_bar(stat = "identity")
+    geom_bar(stat = "identity") +
+    scale_y_continuous(name="Average EURO per Role", 
+                       labels = comma)
 }
 
 year_groupby <- function(){
@@ -32,20 +34,24 @@ year_groupby <- function(){
     )
   View(grouped)
   ggplot(data=grouped, aes(x=Year, y=Average_cost )) +
-    geom_bar(stat = "identity")
+    geom_bar(stat = "identity") + 
+    scale_y_continuous(name="Average EURO per Year", 
+                       labels = comma)
 }
 
 origin_groupby <- function(){
   grouped <- auction_data %>% group_by(Player.Origin) %>%
-    summarise(Average_Cost = mean(Euro),
+    summarise(Average_cost = mean(Euro),
               .groups = 'drop'
     )
   View(grouped)
-  ggplot(data=grouped, aes(x=Origin, y=Average_cost )) +
-    geom_bar(stat = "identity")
+  ggplot(data=grouped, aes(x=Player.Origin, y=Average_cost )) +
+    geom_bar(stat = "identity") +
+    scale_y_continuous(name="Average EURO per Origin", 
+                       labels = comma)
 }
 
 summary(auction_data)
 str(auction_data)
-role_groupby()
+origin_groupby()
 
