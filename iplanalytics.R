@@ -1,7 +1,7 @@
 library(dplyr)
 library(ggplot2)
+library(scales)
 
-?ggplot
 setwd("C:\\Users\\Ryan\\Documents\\GitHub\\r-ipl2013-2022")
 
 auction_data <- read.csv("IPLPlayerAuctionData.csv")
@@ -12,13 +12,8 @@ auction_data["Euro"] <- auction_data$Amount * 0.012
 summary(auction_data)
 str(auction_data)
 
-factor_data <- function(){
-  auction_data$Player <- factor(auction_data$Player)
-  auction_data$Role <- factor(auction_data$Role)
-  auction_data$Team <- factor(auction_data$Team)
-  auction_data$Year <- factor(auction_data$Year)
-  auction_data$Player.Origin <- factor(auction_data$Player.Origin)
-}
+col_factors <- c("Player", "Role", "Team", "Year", "Player.Origin")
+auction_data[col_factors] <- lapply(auction_data[col_factors], factor)
 
 role_groupby <- function(){
   grouped <- auction_data %>% group_by(Role) %>%
@@ -36,7 +31,8 @@ year_groupby <- function(){
               .groups = 'drop'
     )
   View(grouped)
-  
+  ggplot(data=grouped, aes(x=Year, y=Average_cost )) +
+    geom_bar(stat = "identity")
 }
 
 origin_groupby <- function(){
@@ -45,11 +41,11 @@ origin_groupby <- function(){
               .groups = 'drop'
     )
   View(grouped)
-  
+  ggplot(data=grouped, aes(x=Origin, y=Average_cost )) +
+    geom_bar(stat = "identity")
 }
 
-
-factor_data()
 summary(auction_data)
 str(auction_data)
 role_groupby()
+
