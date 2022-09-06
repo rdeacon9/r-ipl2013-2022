@@ -9,13 +9,11 @@ standing_path <- "table export.xlsx"
 
 auction_data["Euro"] <- auction_data$Amount * 0.012
 
-summary(auction_data)
-str(auction_data)
-
 col_factors <- c("Player", "Role", "Team", "Year", "Player.Origin")
 auction_data[col_factors] <- lapply(auction_data[col_factors], factor)
+rm(col_factors)
 
-role_groupby <- function(){
+role_mean <- function(){
   grouped <- auction_data %>% group_by(Role) %>%
     summarise(Average_cost = mean(Euro),
       .groups = 'drop'
@@ -27,7 +25,7 @@ role_groupby <- function(){
                        labels = comma)
 }
 
-year_groupby <- function(){
+year_mean <- function(){
   grouped <- auction_data %>% group_by(Year) %>%
     summarise(Average_cost = mean(Euro),
               .groups = 'drop'
@@ -39,7 +37,7 @@ year_groupby <- function(){
                        labels = comma)
 }
 
-origin_groupby <- function(){
+origin_mean <- function(){
   grouped <- auction_data %>% group_by(Player.Origin) %>%
     summarise(Average_cost = mean(Euro),
               .groups = 'drop'
@@ -51,7 +49,42 @@ origin_groupby <- function(){
                        labels = comma)
 }
 
+origin_sum <- function(){
+  grouped <- auction_data %>% group_by(Player.Origin) %>%
+    summarise(Average_cost = sum(Euro),
+              .groups = 'drop'
+    )
+  View(grouped)
+  ggplot(data=grouped, aes(x=Player.Origin, y=Average_cost )) +
+    geom_bar(stat = "identity") +
+    scale_y_continuous(name="Average EURO per Origin", 
+                       labels = comma)
+}
+
+year_sum <- function(){
+  grouped <- auction_data %>% group_by(Year) %>%
+    summarise(Average_cost = sum(Euro),
+              .groups = 'drop'
+    )
+  View(grouped)
+  ggplot(data=grouped, aes(x=Year, y=Average_cost )) +
+    geom_bar(stat = "identity") +
+    scale_y_continuous(name="Average EURO per Origin", 
+                       labels = comma)
+}
+
+role_sum <- function(){
+  grouped <- auction_data %>% group_by(Role) %>%
+    summarise(Average_cost = sum(Euro),
+              .groups = 'drop'
+    )
+  View(grouped)
+  ggplot(data=grouped, aes(x=Role, y=Average_cost )) +
+    geom_bar(stat = "identity") +
+    scale_y_continuous(name="Average EURO per Origin", 
+                       labels = comma)
+}
+
 summary(auction_data)
 str(auction_data)
-origin_groupby()
 
