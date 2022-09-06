@@ -14,75 +14,126 @@ auction_data[col_factors] <- lapply(auction_data[col_factors], factor)
 rm(col_factors)
 
 role_mean <- function(){
-  grouped <- auction_data %>% group_by(Role) %>%
+  TableResult <- auction_data %>% group_by(Role) %>%
     summarise(Average_cost = mean(Euro),
       .groups = 'drop'
     )
-  View(grouped)
-  ggplot(data=grouped, aes(x=Role, y=Average_cost )) +
+  View(TableResult)
+  ggplot(data=TableResult, aes(x=Role, y=Average_cost )) +
     geom_bar(stat = "identity") +
-    scale_y_continuous(name="Average EURO per Role", 
-                       labels = comma)
+    scale_y_continuous(name="EURO", 
+                       labels = comma) +
+    xlab('Role')
 }
 
 year_mean <- function(){
-  grouped <- auction_data %>% group_by(Year) %>%
+  TableResult <- auction_data %>% group_by(Year) %>%
     summarise(Average_cost = mean(Euro),
               .groups = 'drop'
     )
-  View(grouped)
-  ggplot(data=grouped, aes(x=Year, y=Average_cost )) +
+  View(TableResult)
+  ggplot(data=TableResult, aes(x=Year, y=Average_cost )) +
     geom_bar(stat = "identity") + 
-    scale_y_continuous(name="Average EURO per Year", 
-                       labels = comma)
+    scale_y_continuous(name="EURO", 
+                       labels = comma) +
+    xlab('Year')
 }
 
 origin_mean <- function(){
-  grouped <- auction_data %>% group_by(Player.Origin) %>%
+  TableResult <- auction_data %>% group_by(Player.Origin) %>%
     summarise(Average_cost = mean(Euro),
               .groups = 'drop'
     )
-  View(grouped)
-  ggplot(data=grouped, aes(x=Player.Origin, y=Average_cost )) +
+  View(TableResult)
+  ggplot(data=TableResult, aes(x=Player.Origin, y=Average_cost )) +
     geom_bar(stat = "identity") +
-    scale_y_continuous(name="Average EURO per Origin", 
-                       labels = comma)
+    scale_y_continuous(name="EURO", 
+                       labels = comma) +
+    xlab("Origin")
 }
 
 origin_sum <- function(){
-  grouped <- auction_data %>% group_by(Player.Origin) %>%
-    summarise(Average_cost = sum(Euro),
+  TableResult <- auction_data %>% group_by(Player.Origin) %>%
+    summarise(Total_cost = sum(Euro),
               .groups = 'drop'
     )
-  View(grouped)
-  ggplot(data=grouped, aes(x=Player.Origin, y=Average_cost )) +
+  View(TableResult)
+  ggplot(data=TableResult, aes(x=Player.Origin, y=Total_cost )) +
     geom_bar(stat = "identity") +
-    scale_y_continuous(name="Average EURO per Origin", 
-                       labels = comma)
+    scale_y_continuous(name="EURO", 
+                       labels = comma) +
+    xlab('Origin')
 }
 
 year_sum <- function(){
-  grouped <- auction_data %>% group_by(Year) %>%
-    summarise(Average_cost = sum(Euro),
+  TableResult <- auction_data %>% group_by(Year) %>%
+    summarise(Total_cost = sum(Euro),
               .groups = 'drop'
     )
-  View(grouped)
-  ggplot(data=grouped, aes(x=Year, y=Average_cost )) +
+  View(TableResult)
+  ggplot(data=TableResult, aes(x=Year, y=Total_cost )) +
     geom_bar(stat = "identity") +
-    scale_y_continuous(name="Average EURO per Origin", 
+    scale_y_continuous(name="EURO", 
                        labels = comma)
 }
 
 role_sum <- function(){
-  grouped <- auction_data %>% group_by(Role) %>%
-    summarise(Average_cost = sum(Euro),
+  TableResult <- auction_data %>% group_by(Role) %>%
+    summarise(Total_cost = sum(Euro),
               .groups = 'drop'
     )
-  View(grouped)
-  ggplot(data=grouped, aes(x=Role, y=Average_cost )) +
+  View(TableResult)
+  ggplot(data=TableResult, aes(x=Role, y=Total_cost )) +
     geom_bar(stat = "identity") +
-    scale_y_continuous(name="Average EURO per Origin", 
+    scale_y_continuous(name="EURO", 
                        labels = comma)
+}
+
+player_movement <- function(){
+  pg <- auction_data %>% 
+    group_by(Player,Team) %>%
+    summarise(temphold = n(), .groups = 'drop'
+              )
+  
+  player_transfers <- pg %>% 
+    group_by(Player) %>% 
+    summarise(unique_teams = n(), .groups = 'drop') %>% 
+    ungroup %>%
+    arrange(desc(unique_teams))
+  View(player_transfers)
+}
+
+player_info <- function(){
+  TableResult <- auction_data %>% 
+    group_by(Player, Role) %>%
+    summarise(MaxValue = max(Euro), MinValue = min(Euro), 
+              AverageValue = mean(Euro)
+              , .groups = 'drop') %>% 
+    ungroup %>%
+    arrange(desc(MaxValue))
+  View(TableResult)
+}
+
+total_spent_by_player <- function(){
+  TableResult <- auction_data %>% group_by(Player) %>%
+    summarise(Total_cost = sum(Euro),
+              .groups = 'drop') %>% 
+    ungroup %>%
+    arrange(desc(Total_cost))
+  View(TableResult)
+}
+
+four_role_comp <- function(){
+  TableResult <- auction_data %>% 
+    group_by(Role,Year) %>%
+    summarise(Total = sum(Euro), 
+              .groups = 'drop')
+  View(TableResult)
+  ggplot(data=TableResult, aes(x=Year, y=Total, color=Role, group=Role)) +
+    geom_line() + 
+    scale_y_continuous(name="EURO", 
+                       labels = comma) +
+    xlab('Year')
 }
 
 summary(auction_data)
