@@ -52,6 +52,18 @@ origin_mean <- function(){
     xlab("Origin")
 }
 
+team_mean <- function(){
+  TableResult <- auction_data %>% group_by(Team) %>%
+    summarise(Average_cost = mean(Euro),
+              .groups = 'drop'
+    )
+  View(TableResult)
+  ggplot(data=TableResult, aes(y=Team, x=Average_cost )) +
+    geom_bar(stat = "identity") +
+    scale_x_continuous(name="EURO", 
+                       labels = comma)
+}
+
 origin_sum <- function(){
   TableResult <- auction_data %>% group_by(Player.Origin) %>%
     summarise(Total_cost = sum(Euro),
@@ -86,6 +98,18 @@ role_sum <- function(){
   ggplot(data=TableResult, aes(x=Role, y=Total_cost )) +
     geom_bar(stat = "identity") +
     scale_y_continuous(name="EURO", 
+                       labels = comma)
+}
+
+team_sum <- function(){
+  TableResult <- auction_data %>% group_by(Team) %>%
+    summarise(Total_cost = sum(Euro),
+              .groups = 'drop'
+    )
+  View(TableResult)
+  ggplot(data=TableResult, aes(y=Team, x=Total_cost )) +
+    geom_bar(stat = "identity") +
+    scale_x_continuous(name="EURO", 
                        labels = comma)
 }
 
@@ -151,4 +175,3 @@ team_comp <- function(){
 
 summary(auction_data)
 str(auction_data)
-team_comp()
