@@ -136,6 +136,19 @@ four_role_comp <- function(){
     xlab('Year')
 }
 
+team_comp <- function(){
+  TableResult <- auction_data %>% 
+    group_by(Team,Year) %>%
+    summarise(Total = sum(Euro), 
+              .groups = 'drop')
+  View(TableResult)
+  ggplot(data=TableResult, aes(x=Year, y=Total, color=Team, group=Team)) +
+    geom_line() + 
+    scale_y_continuous(name="EURO", 
+                       labels = comma) +
+    xlab('Year')
+}
+
 summary(auction_data)
 str(auction_data)
-
+team_comp()
